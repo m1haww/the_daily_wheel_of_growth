@@ -54,7 +54,8 @@ class ResultScreen extends StatelessWidget {
                   }),
                 ),
                 SizedBox(height: 20),
-                Expanded(
+                SizedBox(
+                  height: 70,
                   child: ListView.builder(
                     itemCount: categories.length,
                     itemBuilder: (context, index) {

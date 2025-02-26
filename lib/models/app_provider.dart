@@ -7,7 +7,8 @@ class AppProvider extends ChangeNotifier {
   var directorypath = "";
   final List<Home> _home = [];
   List<Home> get home => _home;
-
+  final List<Decisions> _decisions = [];
+  List<Decisions> get decisions => _decisions;
   final QuizManager _quizManager = QuizManager();
 
   void addEvent(Home home) {
@@ -29,6 +30,19 @@ class AppProvider extends ChangeNotifier {
 
   void resetScores() {
     _quizManager.resetScores();
+    notifyListeners();
+  }
+
+  void addDecisions(Decisions decisions) {
+    _decisions.add(decisions);
+    notifyListeners();
+  }
+
+  void resetAllData() {
+    _home.clear();
+    _decisions.clear();
+    _quizManager.resetScores(); // Resetează scorurile quiz-ului
+    directorypath = ""; // Resetează directorypath, dacă este necesar
     notifyListeners();
   }
 }

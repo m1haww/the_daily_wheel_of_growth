@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_daily_wheel_of_growth/pages/decisions_page.dart';
 import 'package:the_daily_wheel_of_growth/pages/home_page.dart';
+import 'package:the_daily_wheel_of_growth/pages/password_page.dart';
 import 'package:the_daily_wheel_of_growth/pages/quiz_page.dart';
+import 'package:the_daily_wheel_of_growth/pages/setting_page.dart';
 import 'package:the_daily_wheel_of_growth/utils.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -18,7 +20,7 @@ class _NavigationPageState extends State<NavigationPage> {
     HomePage(),
     QuizPage(),
     DecisionsPage(),
-    HomePage(),
+    SettingPage(),
   ];
   final List<String> _tabIcons = [
     "images/Layer_1.png",

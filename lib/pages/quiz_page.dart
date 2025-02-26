@@ -26,20 +26,12 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   int getScore(String option) {
-    switch (option[0]) {
-      case '🌟':
-        return 5;
-      case '😊':
-        return 4;
-      case '😌':
-        return 3;
-      case '🤔':
-        return 2;
-      case '😞':
-        return 1;
-      default:
-        return 0;
-    }
+    if (option.startsWith('🌟')) return 5;
+    if (option.startsWith('😊')) return 4;
+    if (option.startsWith('😌')) return 3;
+    if (option.startsWith('🤔')) return 2;
+    if (option.startsWith('😞')) return 1;
+    return 0;
   }
 
   void selectAnswer(

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_daily_wheel_of_growth/models/text.dart';
 import 'package:the_daily_wheel_of_growth/pages/calendar_page.dart';
-import 'package:the_daily_wheel_of_growth/pages/note_page.dart';
+// import 'package:the_daily_wheel_of_growth/pages/note_page.dart';
 import 'package:the_daily_wheel_of_growth/utils.dart';
 
 Widget buildContainer(BuildContext context, VoidCallback onTap, String text) {
@@ -74,12 +74,12 @@ Widget buildAppbarTitle(BuildContext context, String text) {
 Widget buildAppbarActionCalendar(BuildContext context, DateTime selectedDay) {
   return GestureDetector(
     onTap: () {
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => CalendarPage(selectedDay: selectedDay),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   CupertinoPageRoute(
+      //     builder: (context) => CalendarPage(selectedDay: selectedDay),
+      //   ),
+      // );
     },
     child: Padding(
       padding: const EdgeInsets.only(right: 15.0),
@@ -88,32 +88,32 @@ Widget buildAppbarActionCalendar(BuildContext context, DateTime selectedDay) {
   );
 }
 
-Widget buildFloating(BuildContext context) {
-  final height = MediaQuery.of(context).size.height;
-  final width = MediaQuery.of(context).size.width;
-  return Container(
-    width: width * 0.16,
-    height: height * 0.08,
-    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-    child: FloatingActionButton(
-      backgroundColor: kkPurpleDark,
+// Widget buildFloating(BuildContext context) {
+//   final height = MediaQuery.of(context).size.height;
+//   final width = MediaQuery.of(context).size.width;
+//   return Container(
+//     width: width * 0.16,
+//     height: height * 0.08,
+//     decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+//     child: FloatingActionButton(
+//       backgroundColor: kkPurpleDark,
 
-      onPressed: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => NotePage(),
-          ),
-        );
-      },
-      child: const Icon(
-        Icons.add,
-        color: Colors.white,
-        size: 24,
-      ), // Adaugă o pictogramă pentru buton
-    ),
-  );
-}
+//       onPressed: () {
+//         Navigator.push(
+//           context,
+//           CupertinoPageRoute(
+//             builder: (context) => NotePage(),
+//           ),
+//         );
+//       },
+//       child: const Icon(
+//         Icons.add,
+//         color: Colors.white,
+//         size: 24,
+//       ), // Adaugă o pictogramă pentru buton
+//     ),
+//   );
+// }
 
 Widget buildTextField(BuildContext context, String text, Color colortext,
     Color colorbackground, Color colorhint,
@@ -249,3 +249,74 @@ Widget buildTextFieldOption(BuildContext context, String text, Color colortext,
     ),
   );
 }
+
+Widget buildContainerSettings(
+  BuildContext context,
+  String text,
+) {
+  final height = MediaQuery.of(context).size.height;
+  final width = MediaQuery.of(context).size.width;
+  return Container(
+    width: double.infinity,
+    height: height * 0.06,
+    decoration: BoxDecoration(
+        color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Text(
+          text,
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            fontFamily: "Inter",
+            fontWeight: FontWeight.w400,
+            fontSize: 16,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+// Widget buildContainerSettingstoggle(
+//   BuildContext context,
+//   String text,
+// ) {
+//   bool isToggled = false;
+
+//   final height = MediaQuery.of(context).size.height;
+//   return Container(
+//     width: double.infinity,
+//     height: height * 0.06,
+//     decoration: BoxDecoration(
+//         color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
+//     child: Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             text,
+//             textAlign: TextAlign.left,
+//             style: TextStyle(
+//               fontFamily: "Inter",
+//               fontWeight: FontWeight.w400,
+//               fontSize: 16,
+//               color: Colors.white,
+//             ),
+//           ),
+//           Switch(
+//             value: isToggled,
+//             onChanged: (value) {
+//               isToggled = value;
+//             },
+//             activeColor: kGreenLIght, // Culoare ON
+//             inactiveThumbColor: Color(0xff787880A3), // Culoare OFF
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }

@@ -4,6 +4,8 @@ import 'package:the_daily_wheel_of_growth/models/app_provider.dart';
 import 'package:the_daily_wheel_of_growth/pages/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(ChangeNotifierProvider(
       create: (context) => AppProvider(), child: const MyApp()));
 }
