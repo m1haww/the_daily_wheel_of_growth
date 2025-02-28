@@ -43,7 +43,8 @@ dependencies:
   just_audio: ^0.9.36
   path_provider: ^2.1.5
   share_plus: ^6.0.0
-
+  shared_preferences: ^2.0.15
+  url_launcher: ^6.3.1
 
 
 
@@ -102,7 +103,8 @@ flutter:
   #         weight: 700
     - family: Montserrat
       fonts:
-        - asset: fonts/Montserrat-VariableFont_wght.ttf
+        - asset: fonts/Montserrat-Regular.ttf
+
     - family: Sf
       fonts:
         - asset: fonts/SFPRODISPLAYREGULAR.OTF

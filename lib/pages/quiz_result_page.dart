@@ -11,7 +11,7 @@ class QuizResultPage extends StatelessWidget {
   QuizResultPage({required this.categoryScores});
 
   final List<Color> sectionColors = [
-    kkPurpleDark,
+    Color(0xffCC16FB),
     kBlueDark,
     kGreenLIght,
     kYellow,

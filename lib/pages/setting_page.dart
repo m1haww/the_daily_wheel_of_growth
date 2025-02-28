@@ -6,6 +6,7 @@ import 'package:the_daily_wheel_of_growth/models/app_provider.dart';
 import 'package:the_daily_wheel_of_growth/models/container.dart';
 import 'package:the_daily_wheel_of_growth/models/text.dart';
 import 'package:the_daily_wheel_of_growth/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -15,30 +16,41 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  // Use a Map to track each switch's state by its name
-  Map<String, bool> toggles = {
-    "Music": false,
-    "Password to enter the app": false,
-  };
   final AudioPlayer _audioPlayer = AudioPlayer();
   int volume = 50; // Initial volume (50%)
+  final Uri _url = Uri.parse(
+      'https://www.termsfeed.com/live/a574e3ad-b14f-4099-8135-5a2d5fa243c9');
 
+  Future<void> _launchUrl() async {
+    if (await canLaunchUrl(_url)) {
+      await launchUrl(_url, mode: LaunchMode.externalApplication);
+    } else {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Ensure the correct state of music when the page loads
+    final appProvider = Provider.of<AppProvider>(context, listen: false);
+    if (appProvider.musicToggle) {
+      _loadAudio(); // Play music if it's enabled in the provider
+    }
+  }
+
+  // Load and start the audio if needed
   Future<void> _loadAudio() async {
     try {
       await _audioPlayer.setAsset('audio/bg music growth.wav');
       _audioPlayer.setVolume(volume / 100); // Set initial volume
-      _audioPlayer.play(); // Play the song automatically
+      _audioPlayer.play(); // Start playing the audio
     } catch (e) {
       print("Error loading audio: $e");
     }
   }
 
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
-  }
-
+  // Share the app with others
   Future<void> _shareApp() async {
     try {
       final String appLink =
@@ -47,17 +59,15 @@ class _SettingPageState extends State<SettingPage> {
       await Share.share(shareText);
     } catch (e) {
       print("Error sharing app: $e");
-      // Show a feedback to the user (optional)
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error sharing the app')),
       );
     }
   }
 
+  // Reset all data and stop the music
   void _resetAllData() {
     setState(() {
-      toggles.updateAll((key, value) => false); // Reset all switches to false
-      volume = 50; // Reset volume to 50%
       _audioPlayer.stop(); // Stop the music
     });
     Provider.of<AppProvider>(context, listen: false).resetAllData();
@@ -68,36 +78,57 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   @override
+  void dispose() {
+    _audioPlayer
+        .dispose(); // Dispose of the audio player when the page is closed
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final appProvider = Provider.of<AppProvider>(context);
+
     return Scaffold(
       backgroundColor: kBlackDark,
-      appBar: AppBar(
-        backgroundColor: kBlackDark,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text(
-          "Settings",
-          style: TextStyle(
-              fontFamily: "Inter",
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-              color: kBlackLight),
-        ),
-      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              buildHeight(context, 0.03),
+              Center(
+                child: Text(
+                  "Settings",
+                  style: TextStyle(
+                      fontFamily: "Inter",
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      color: kBlackLight),
+                ),
+              ),
               buildHeight(context, 0.04),
               buildContainerSettingstoggle(
                 context,
                 "Music",
+                appProvider.musicToggle, // Use musicToggle from Provider
+                (value) {
+                  appProvider
+                      .toggleMusic(value); // Update music toggle in Provider
+                  if (value) {
+                    _loadAudio(); // Start music
+                  } else {
+                    _audioPlayer.stop(); // Stop music
+                  }
+                },
               ),
-              buildHeight(context, 0.005),
+              buildHeight(context, 0.008),
               buildContainerShareAndReset(
-                  context, "Share the app", "images/Layer 51.png", _shareApp),
+                context,
+                "Share the app",
+                "images/Layer 51.png",
+                _shareApp,
+              ),
               buildHeight(context, 0.04),
               buildContainerShareAndReset(
                 context,
@@ -107,10 +138,14 @@ class _SettingPageState extends State<SettingPage> {
                   _resetAllData();
                 },
               ),
-              buildHeight(context, 0.005),
-              buildContainerSettings(context, "Terms of use"),
-              buildHeight(context, 0.005),
-              buildContainerSettings(context, "Privacy Policy")
+              buildHeight(context, 0.008),
+              GestureDetector(
+                  onTap: _launchUrl,
+                  child: buildContainerSettings1(context, "Terms of use")),
+              buildHeight(context, 0.008),
+              GestureDetector(
+                  onTap: _launchUrl,
+                  child: buildContainerSettings1(context, "Privacy Policy")),
             ],
           ),
         ),
@@ -118,11 +153,12 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  // The function now accepts a callback for onChanged
-  // Update the buildContainerSettingstoggle method
+  // Updated buildContainerSettingstoggle method
   Widget buildContainerSettingstoggle(
     BuildContext context,
     String text,
+    bool currentState, // Pass current state from provider
+    ValueChanged<bool> onChanged, // Callback to update state
   ) {
     final height = MediaQuery.of(context).size.height;
 
@@ -130,46 +166,36 @@ class _SettingPageState extends State<SettingPage> {
       width: double.infinity,
       height: height * 0.06,
       decoration: BoxDecoration(
-          color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
+        color: Color(0xffCC16FB),
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontFamily: "Inter",
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                color: Colors.white,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: Text(
+                  text,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontFamily: "Inter",
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
             Switch(
-              value: toggles[text]!, // Access the state by the setting name
-              onChanged: (value) {
-                setState(() {
-                  toggles[text] = value; // Update the switch state
-                  if (text == "Music") {
-                    if (value) {
-                      _loadAudio(); // Start music
-                    } else {
-                      _audioPlayer.stop(); // Stop music
-                    }
-                  }
-
-                  if (text == "Share the app") {
-                    if (value) {
-                      // Share the app via different platforms
-                      _shareApp();
-                    }
-                  }
-                });
-              },
-              activeColor: kGreenLIght,
+              value: currentState,
+              onChanged: onChanged,
+              activeColor: Colors.white,
+              activeTrackColor: kGreenLIght,
               inactiveThumbColor: Colors.white,
-              inactiveTrackColor: Color(0xff787880A3),
+              inactiveTrackColor: Color(0xFF787880A3),
             )
           ],
         ),
@@ -181,33 +207,40 @@ class _SettingPageState extends State<SettingPage> {
     BuildContext context,
     String text,
     String image,
-    VoidCallback onTap, // Adăugăm un callback pentru acțiune
+    VoidCallback onTap,
   ) {
     final height = MediaQuery.of(context).size.height;
 
     return GestureDetector(
-      onTap: onTap, // Apelează funcția specificată când este apăsat
+      onTap: onTap,
       child: Container(
         width: double.infinity,
         height: height * 0.06,
         decoration: BoxDecoration(
-            color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
+          color: Color(0xffCC16FB),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                text,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontFamily: "Inter",
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  color: Colors.white,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 6.0),
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontFamily: "Inter",
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
-              Image(image: AssetImage(image))
+              Image(image: AssetImage(image)),
             ],
           ),
         ),

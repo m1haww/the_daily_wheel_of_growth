@@ -12,7 +12,7 @@ class QuizResultPageOrigin extends StatelessWidget {
   QuizResultPageOrigin({required this.categoryScores});
 
   final List<Color> sectionColors = [
-    kkPurpleDark,
+    Color(0xffCC16FB),
     kBlueDark,
     kGreenLIght,
     kYellow,
@@ -54,8 +54,9 @@ class QuizResultPageOrigin extends StatelessWidget {
                           width: double.infinity,
                           height: height * 0.06,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: kkPurpleDark),
+                            borderRadius: BorderRadius.circular(12),
+                            color: Color(0xffCC16FB),
+                          ),
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(

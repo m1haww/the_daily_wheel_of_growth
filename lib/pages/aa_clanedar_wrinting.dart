@@ -70,6 +70,7 @@ class _AaClanedarWrintingState extends State<AaClanedarWrinting> {
           _selectedImage = cachedImage;
         });
       }
+      _updateSaveButtonState(); // 🔥 Actualizează starea butonului
     } else {
       if (kDebugMode) {
         print("No image selected.");

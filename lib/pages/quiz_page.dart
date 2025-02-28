@@ -148,7 +148,6 @@ class _QuizPageState extends State<QuizPage> {
           title: const Text(
             "Leaving the Test?",
             style: TextStyle(
-              fontFamily: "Sf",
               fontSize: 17,
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -157,7 +156,6 @@ class _QuizPageState extends State<QuizPage> {
           content: const Text(
             "If you exit now, your progress won’t be saved. Do you want to continue or stay and finish the test?",
             style: TextStyle(
-              fontFamily: "Sf",
               fontSize: 13,
               fontWeight: FontWeight.w400,
               color: Colors.black,
@@ -165,28 +163,25 @@ class _QuizPageState extends State<QuizPage> {
             textAlign: TextAlign.center,
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                // Close the dialog and continue the quiz
-                Navigator.pop(context);
-              },
+            CupertinoDialogAction(
+              onPressed: () => Navigator.pop(context),
               child: const Text(
                 "Stay & Continue",
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xff007AFF),
+                  color: Color(0xff007AFF), // iOS blue
                 ),
               ),
             ),
-            TextButton(
+            CupertinoDialogAction(
+              isDestructiveAction:
+                  true, // Makes text red & adds separator automatically
               onPressed: () {
-                // Exit and navigate to the navigation page
+                Navigator.pop(context);
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => NavigationPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => NavigationPage()),
                 );
               },
               child: const Text(
@@ -194,7 +189,6 @@ class _QuizPageState extends State<QuizPage> {
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xffFF3B30),
                 ),
               ),
             ),

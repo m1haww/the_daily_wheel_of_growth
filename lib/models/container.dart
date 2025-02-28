@@ -15,7 +15,7 @@ Widget buildContainer(BuildContext context, VoidCallback onTap, String text) {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: kkPurpleDark,
+        color: Color(0xffCC16FB),
       ),
       child: Padding(
         padding: EdgeInsets.only(left: 16), // Adaugă un spațiu la stânga
@@ -75,71 +75,21 @@ Widget buildAppbarLeading(BuildContext context) {
 }
 
 Widget buildAppbarAction(BuildContext context) {
-  return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(right: 15.0),
-        child: Image(image: AssetImage("images/Close.png")),
-      ));
+  return Padding(
+    padding: const EdgeInsets.only(right: 15.0),
+    child: Image(image: AssetImage("images/Close.png")),
+  );
 }
-
-// Widget buildAppbarTitle(BuildContext context, String text) {
-//   return GestureDetector(
-//     onTap: () {
-//       Navigator.pop(context);
-//     },
-//     child: Padding(
-//       padding: EdgeInsets.only(right: 80.0),
-//       child: buildAppbartext(context, text),
-//     ),
-//   );
-// }
 
 Widget buildAppbarActionCalendar(BuildContext context, DateTime selectedDay) {
   return GestureDetector(
-    onTap: () {
-      // Navigator.push(
-      //   context,
-      //   CupertinoPageRoute(
-      //     builder: (context) => CalendarPage(selectedDay: selectedDay),
-      //   ),
-      // );
-    },
+    onTap: () {},
     child: Padding(
       padding: const EdgeInsets.only(right: 15.0),
       child: Image(image: AssetImage("images/Layer_1 (1).png")),
     ),
   );
 }
-
-// Widget buildFloating(BuildContext context) {
-//   final height = MediaQuery.of(context).size.height;
-//   final width = MediaQuery.of(context).size.width;
-//   return Container(
-//     width: width * 0.16,
-//     height: height * 0.08,
-//     decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-//     child: FloatingActionButton(
-//       backgroundColor: kkPurpleDark,
-
-//       onPressed: () {
-//         Navigator.push(
-//           context,
-//           CupertinoPageRoute(
-//             builder: (context) => NotePage(),
-//           ),
-//         );
-//       },
-//       child: const Icon(
-//         Icons.add,
-//         color: Colors.white,
-//         size: 24,
-//       ), // Adaugă o pictogramă pentru buton
-//     ),
-//   );
-// }
 
 Widget buildTextField(BuildContext context, String text, Color colortext,
     Color colorbackground, Color colorhint,
@@ -219,7 +169,7 @@ Widget buildSave(BuildContext context, VoidCallback onTap, String text) {
       width: width * 0.2,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: kkPurpleDark,
+        color: Color(0xffCC16FB),
       ),
       child: Align(
         child: Text(
@@ -287,18 +237,21 @@ Widget buildContainerSettings(
     height: height * 0.06,
     decoration: BoxDecoration(
         color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
-    child: Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8.0),
-        child: Text(
-          text,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            fontFamily: "Inter",
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            text,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontFamily: "Inter",
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -306,43 +259,35 @@ Widget buildContainerSettings(
   );
 }
 
-// Widget buildContainerSettingstoggle(
-//   BuildContext context,
-//   String text,
-// ) {
-//   bool isToggled = false;
-
-//   final height = MediaQuery.of(context).size.height;
-//   return Container(
-//     width: double.infinity,
-//     height: height * 0.06,
-//     decoration: BoxDecoration(
-//         color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
-//     child: Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text(
-//             text,
-//             textAlign: TextAlign.left,
-//             style: TextStyle(
-//               fontFamily: "Inter",
-//               fontWeight: FontWeight.w400,
-//               fontSize: 16,
-//               color: Colors.white,
-//             ),
-//           ),
-//           Switch(
-//             value: isToggled,
-//             onChanged: (value) {
-//               isToggled = value;
-//             },
-//             activeColor: kGreenLIght, // Culoare ON
-//             inactiveThumbColor: Color(0xff787880A3), // Culoare OFF
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
+Widget buildContainerSettings1(
+  BuildContext context,
+  String text,
+) {
+  final height = MediaQuery.of(context).size.height;
+  final width = MediaQuery.of(context).size.width;
+  return Container(
+    width: double.infinity,
+    height: height * 0.06,
+    decoration: BoxDecoration(
+        color: Color(0xffCC16FB), borderRadius: BorderRadius.circular(12)),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            text,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontFamily: "Inter",
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}

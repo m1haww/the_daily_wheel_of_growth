@@ -125,6 +125,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  bool _isHomeGridEmpty() {
+    final selectedDate =
+        DateFormat('yyyy-MM-dd').parse(allDates[selectedIndex]["date"]!);
+    final provider = Provider.of<AppProvider>(context, listen: false);
+    return provider.home
+        .where((event) => isSameDay(event.date, selectedDate))
+        .isEmpty;
+  }
+
   Widget _buildHomeGrid() {
     // Parse the selected date from the horizontal list.
     final selectedDate =
@@ -137,15 +146,7 @@ class _HomePageState extends State<HomePage> {
             .toList();
 
         if (filteredEvents.isEmpty) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                "You didn't add any notes.",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          );
+          return const Center();
         }
 
         return ListView.builder(
@@ -166,7 +167,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final borderSide = BorderSide(color: Colors.white, width: 2);
+    final borderSide = BorderSide(color: Colors.white, width: 1);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kkPurpleDark,
@@ -196,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                   child: SizedBox(
                     // Impunem o înălțime fixă
                     width: double.infinity,
-                    height: 100, // Modifică această valoare cum dorești
+                    height: 70, // Modifică această valoare cum dorești
                     child: Container(
                       decoration: BoxDecoration(
                         color: kkPurpleDark,
@@ -221,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 5.0),
                               child: Container(
-                                width: width * 0.2,
+                                width: width * 0.15,
                                 decoration: BoxDecoration(
                                     color: isSelected
                                         ? Color(0xffCC16FB)
@@ -265,11 +266,10 @@ class _HomePageState extends State<HomePage> {
                 height: height * 0.03,
                 color: kkPurpleDark,
               ),
-              buildHeight(context, 0.02),
-
+              buildHeight(context, 0.008),
+              SizedBox(
+                  height: _isHomeGridEmpty() ? height * 0.015 : height * 0.02),
               _buildHomeGrid(),
-
-              buildHeight(context, 0.02),
               GestureDetector(
                 onTap: () => _openCalendarPage(context),
                 child: Container(
