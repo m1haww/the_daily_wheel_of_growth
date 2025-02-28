@@ -44,5 +44,6 @@ class AppProvider extends ChangeNotifier {
     _quizManager.resetScores(); // Resetează scorurile quiz-ului
     directorypath = ""; // Resetează directorypath, dacă este necesar
     notifyListeners();
+    print("sasat");
   }
 }

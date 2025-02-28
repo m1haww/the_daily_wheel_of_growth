@@ -46,7 +46,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 10.0),
               child: Center(
-                  child: buildContainer(context, () {
+                  child: buildContainer1(context, () {
                 Navigator.push(
                     context,
                     CupertinoPageRoute(

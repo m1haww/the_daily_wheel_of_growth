@@ -25,93 +25,109 @@ class _DecisionsPageState extends State<DecisionsPage> {
 
     return Scaffold(
       backgroundColor: kBlackDark,
-      appBar: AppBar(
-        backgroundColor: kBlackDark,
-        title: Text("Your Decisions", style: TextStyle(color: Colors.white)),
-        automaticallyImplyLeading: false,
-      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            buildHeight(context, 0.05),
+
+            Center(
+              child: Text(
+                "Decisions",
+                style: TextStyle(
+                    fontFamily: "Inter",
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                    color: kBlackLight),
+              ),
+            ),
             buildHeight(context, 0.02), // Small spacing at the top
 
-            // ✅ Expanded at the top (ListView takes all available space)
-            Expanded(
-              child: decisions.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: decisions.length,
-                      itemBuilder: (context, index) {
-                        final decision = decisions[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) =>
-                                      DecisionsOptionsInfoPage(
-                                          decisions: decision),
-                                ));
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: height * 0.15,
-                            child: Card(
-                              color: kBlackLight,
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 14.0,
-                                  right: 14.0,
+            // ListView without Expanded
+            decisions.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap:
+                        true, // Allows ListView to take only required space
+                    physics:
+                        NeverScrollableScrollPhysics(), // Prevents scroll within the ListView
+                    itemCount: decisions.length,
+                    itemBuilder: (context, index) {
+                      final decision = decisions[index];
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        DecisionsOptionsInfoPage(
+                                            decisions: decision),
+                                  ));
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: height * 0.15,
+                              child: Card(
+                                color: kBlackLight,
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 14.0,
+                                    right: 14.0,
+                                  ),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(decision.title,
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                        buildWidth(context, 0.04),
+                                        Image(
+                                            image:
+                                                AssetImage("images/wheel.png")),
+                                      ]),
                                 ),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(decision.title,
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                      buildWidth(context, 0.04),
-                                      Image(
-                                          image: AssetImage("images/wheel.png"))
-                                    ]),
                               ),
                             ),
                           ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        "No decisions yet. Add one!",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
+                          SizedBox(
+                              height: 10), // Add vertical space between items
+                        ],
+                      );
+                    },
+                  )
+                : SizedBox.shrink(),
+
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => DecisionsDetailsPage(),
+                    ));
+              },
+              child: Center(
+                child: Container(
+                    width: width * 0.15,
+                    height: height * 0.07,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: kkPurpleDark,
                     ),
-            ),
-
-            buildHeight(context, 0.02), // Space between list and FAB
-
-            // ✅ Floating Action Button BELOW the list
-            Center(
-              child: FloatingActionButton(
-                backgroundColor: kkPurpleDark,
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => DecisionsDetailsPage(),
-                      ));
-                },
-                child: Icon(
-                  Icons.add,
-                  size: 24,
-                  color: Colors.white,
-                ),
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                    )),
               ),
             ),
 
-            buildHeight(context, 0.02), // Small spacing at the bottom
+            buildHeight(context, 0.04),
           ],
         ),
       ),

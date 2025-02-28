@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_daily_wheel_of_growth/models/app_provider.dart';
@@ -59,24 +60,60 @@ class _DecisionsDetailsPageState extends State<DecisionsDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: kBlackDark,
       appBar: AppBar(
         backgroundColor: kBlackDark,
         leading: buildAppbarLeading(context),
+        centerTitle: false,
+        title: buildAppbartext(context, "Back"),
         actions: [
-          buildSave(context, () {
-            final provider = Provider.of<AppProvider>(context, listen: false);
-            final eventik = Decisions(
-                title: _controllerdecisions.text,
-                option1: _controlleroption1.text,
-                option2: _controlleroption2.text);
-            if (_showExtraOption) {
-              eventik.option3 = _controlleroption3.text;
-            }
-            provider.addDecisions(eventik);
-            Navigator.pop(context);
-          }, "Save")
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, right: 10),
+            child: buildSave(context, () {
+              final provider = Provider.of<AppProvider>(context, listen: false);
+
+              // Check if Option 1 or Option 2 are empty
+              if (_controlleroption1.text.isEmpty ||
+                  _controlleroption2.text.isEmpty ||
+                  _controllerdecisions.text.isEmpty) {
+                // Show SnackBar if any required field is empty
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Please complete all required fields.",
+                      style: TextStyle(fontFamily: "Inter"),
+                    ),
+                    backgroundColor: Color(0xffE5182B),
+                  ),
+                );
+              } else if (_showExtraOption && _controlleroption3.text.isEmpty) {
+                // Show SnackBar if Option 3 is visible but empty
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "Please complete Option 3.",
+                      style: TextStyle(fontFamily: "Inter"),
+                    ),
+                    backgroundColor: Color(0xffE5182B),
+                  ),
+                );
+              } else {
+                final eventik = Decisions(
+                  title: _controllerdecisions.text,
+                  option1: _controlleroption1.text,
+                  option2: _controlleroption2.text,
+                );
+                if (_showExtraOption) {
+                  eventik.option3 = _controlleroption3.text;
+                }
+                provider.addDecisions(eventik);
+                Navigator.pop(context);
+              }
+            }, "Save"),
+          )
         ],
       ),
       body: SafeArea(
@@ -110,15 +147,15 @@ class _DecisionsDetailsPageState extends State<DecisionsDetailsPage> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              _deleteOption3();
                               _showDeleteIcon = false;
+                              _showActionSheet(context);
                             });
                           },
                           child: Container(
-                            padding: EdgeInsets.all(8),
+                            padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: kkPurpleDark,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               Icons.remove,
@@ -159,25 +196,96 @@ class _DecisionsDetailsPageState extends State<DecisionsDetailsPage> {
                   ],
                 ),
               buildHeight(context, 0.02),
-              Center(
-                child: FloatingActionButton(
-                  backgroundColor: kkPurpleDark,
-                  onPressed: () {
-                    setState(() {
-                      _showExtraOption = !_showExtraOption; // Toggle visibility
-                    });
-                  },
-                  child: Icon(
-                    Icons.add,
-                    size: 24,
-                    color: Colors.white,
-                  ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _showExtraOption = !_showExtraOption; // Toggle visibility
+                  });
+                },
+                child: Center(
+                  child: Container(
+                      width: width * 0.15,
+                      height: height * 0.07,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: kkPurpleDark,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.add,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      )),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showActionSheet(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text(
+            "Unsaved Changes",
+            style: TextStyle(
+              fontFamily: "Sf",
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+            "You have unsaved changes. If you exit \n now, your progress will be lost. Do you \n want to continue?",
+            style: TextStyle(
+              fontFamily: "Sf",
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context); // Închide dialogul fără să șteargă
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontFamily: "Sf",
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff007AFF),
+                ),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                setState(() {
+                  _deleteOption3(); // Șterge opțiunea 3
+                });
+                Navigator.pop(context); // Închide dialogul după ștergere
+              },
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                  fontFamily: "Sf",
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffFF3B30),
+                ),
+              ),
+              isDestructiveAction: true, // Marcat ca acțiune distructivă
+            ),
+          ],
+        );
+      },
     );
   }
 }

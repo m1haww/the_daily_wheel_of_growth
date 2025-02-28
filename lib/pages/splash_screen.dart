@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) => NavigationPage(),
+            builder: (context) => OnboardingPage(),
           ));
     });
   }

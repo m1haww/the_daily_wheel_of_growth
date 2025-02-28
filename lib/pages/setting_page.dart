@@ -60,6 +60,8 @@ class _SettingPageState extends State<SettingPage> {
       volume = 50; // Reset volume to 50%
       _audioPlayer.stop(); // Stop the music
     });
+    Provider.of<AppProvider>(context, listen: false).resetAllData();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("All data has been reset.")),
     );
@@ -73,7 +75,14 @@ class _SettingPageState extends State<SettingPage> {
         backgroundColor: kBlackDark,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: buildAppbarTitle(context, "Settings"),
+        title: Text(
+          "Settings",
+          style: TextStyle(
+              fontFamily: "Inter",
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: kBlackLight),
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -82,19 +91,9 @@ class _SettingPageState extends State<SettingPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildHeight(context, 0.04),
-              buildContainerSettings(
-                context,
-                "Create a password",
-              ),
-              buildHeight(context, 0.04),
               buildContainerSettingstoggle(
                 context,
                 "Music",
-              ),
-              buildHeight(context, 0.005),
-              buildContainerSettingstoggle(
-                context,
-                "Password to enter the app",
               ),
               buildHeight(context, 0.005),
               buildContainerShareAndReset(
@@ -105,11 +104,7 @@ class _SettingPageState extends State<SettingPage> {
                 "Reset all data",
                 "images/Frame.png",
                 () {
-                  Provider.of<AppProvider>(context, listen: false)
-                      .resetAllData();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("All data has been reset!")),
-                  );
+                  _resetAllData();
                 },
               ),
               buildHeight(context, 0.005),
@@ -198,7 +193,7 @@ class _SettingPageState extends State<SettingPage> {
         decoration: BoxDecoration(
             color: kkPurpleDark, borderRadius: BorderRadius.circular(12)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

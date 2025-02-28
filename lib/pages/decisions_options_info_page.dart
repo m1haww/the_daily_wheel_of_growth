@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_daily_wheel_of_growth/models/classes.dart';
 import 'package:the_daily_wheel_of_growth/models/container.dart';
 import 'package:the_daily_wheel_of_growth/models/text.dart';
+import 'package:the_daily_wheel_of_growth/pages/navigation_page.dart';
 import 'package:the_daily_wheel_of_growth/utils.dart';
 
 class DecisionsOptionsInfoPage extends StatefulWidget {
@@ -17,15 +19,15 @@ class DecisionsOptionsInfoPage extends StatefulWidget {
 class _DecisionsOptionsInfoPageState extends State<DecisionsOptionsInfoPage> {
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: kkBlueLight, // Set background color of the whole screen
       appBar: AppBar(
         backgroundColor: kkBlueLight,
         leading: buildAppbarLeading(context),
-        title: Text(
-          "Decision Details",
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
+        centerTitle: false,
+        title: buildAppbartext(context, "Back"),
         elevation: 0,
       ),
       body: SafeArea(
@@ -46,10 +48,10 @@ class _DecisionsOptionsInfoPageState extends State<DecisionsOptionsInfoPage> {
                   child: Text(
                     widget.decisions.title,
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                        fontSize: 24,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff554D53),
+                        fontFamily: "Inter"),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -81,9 +83,10 @@ class _DecisionsOptionsInfoPageState extends State<DecisionsOptionsInfoPage> {
                           child: Text(
                             widget.decisions.option1,
                             style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Inter"),
                           ),
                         ),
                       ],
@@ -116,9 +119,10 @@ class _DecisionsOptionsInfoPageState extends State<DecisionsOptionsInfoPage> {
                           child: Text(
                             widget.decisions.option2,
                             style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Inter"),
                           ),
                         ),
                       ],
@@ -151,15 +155,44 @@ class _DecisionsOptionsInfoPageState extends State<DecisionsOptionsInfoPage> {
                             child: Text(
                               widget.decisions.option3!,
                               style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Inter"),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => NavigationPage(),
+                          ));
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: height * 0.06,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: kkPurpleDark),
+                      child: Center(
+                        child: Text("Generate",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

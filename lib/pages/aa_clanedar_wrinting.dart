@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,7 +42,9 @@ class _AaClanedarWrintingState extends State<AaClanedarWrinting> {
   void _updateSaveButtonState() {
     setState(() {
       _save = _controllerttitle.text.isNotEmpty &&
-          _controllerdescription.text.isNotEmpty;
+          _controllerdescription.text.isNotEmpty &&
+          (_selectedImage != null ||
+              _imageData != null); // Added image condition
     });
   }
 
@@ -81,52 +84,60 @@ class _AaClanedarWrintingState extends State<AaClanedarWrinting> {
     return Scaffold(
       backgroundColor: kBlackDark,
       appBar: AppBar(
+        centerTitle: false,
+        title: buildAppbartext(context, "Back"),
         backgroundColor: kBlackDark,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 5.0),
+          child: buildAppbarLeading(context),
         ),
         actions: [
-          buildSave(
-            context,
-            _save
-                ? () {
-                    final provider =
-                        Provider.of<AppProvider>(context, listen: false);
-                    final newEvent = Home(
-                      title: _controllerttitle.text,
-                      description: _controllerdescription.text,
-                      image: _selectedImage?.path ?? "images/splash_img.png",
-                      date: widget
-                          .selectedDay, // Save the selected day with the event
-                    );
-                    newEvent.fileImage = _selectedImage;
-                    provider.addEvent(newEvent);
-                    // Double pop: first closes the writing page, then the calendar page,
-                    // returning to HomePage with the updated event list.
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  }
-                : () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Please complete all required fields.",
-                          style: TextStyle(fontFamily: "Inter"),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, right: 10),
+            child: buildSave(
+              context,
+              _save
+                  ? () {
+                      final provider =
+                          Provider.of<AppProvider>(context, listen: false);
+                      final newEvent = Home(
+                        title: _controllerttitle.text,
+                        description: _controllerdescription.text,
+                        image: _selectedImage?.path ?? "images/Untitled 1.png",
+                        date: widget
+                            .selectedDay, // Save the selected day with the event
+                      );
+                      newEvent.fileImage = _selectedImage;
+                      provider.addEvent(newEvent);
+                      // Double pop: first closes the writing page, then the calendar page,
+                      // returning to HomePage with the updated event list.
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    }
+                  : () {
+                      // Show SnackBar if fields are not filled
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please complete all required fields, including image.",
+                            style: TextStyle(fontFamily: "Inter"),
+                          ),
+                          backgroundColor: Color(0xffE5182B),
                         ),
-                        backgroundColor: Color(0xffE5182B),
-                      ),
-                    );
-                  },
-            "Save",
+                      );
+                    },
+              "Save",
+            ),
           )
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              buildHeight(context, 0.04),
               buildTextField(
                 context,
                 "Write your journal entry title here...",
@@ -147,35 +158,124 @@ class _AaClanedarWrintingState extends State<AaClanedarWrinting> {
               buildHeight(context, 0.02),
               (_selectedImage == null && _imageData == null)
                   ? const SizedBox.shrink()
-                  : Container(
-                      width: width * 0.3,
-                      height: height * 0.23,
+                  : Stack(
+                      children: [
+                        Container(
+                          width: width * 0.49,
+                          height: height * 0.23,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: _selectedImage != null
+                                ? Image.file(_selectedImage!, fit: BoxFit.cover)
+                                : Image.memory(_imageData!, fit: BoxFit.cover),
+                          ),
+                        ),
+                        Positioned(
+                            top: 5,
+                            right: 5,
+                            child: GestureDetector(
+                                onTap: () => _showActionSheet(context),
+                                child: Image(
+                                    image: AssetImage("images/Close.png"))))
+                      ],
+                    ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: GestureDetector(
+                    onTap:
+                        _pickImage, // Open image picker when the icon is tapped
+                    child: Container(
+                      width: width * 0.15,
+                      height: height * 0.07,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(12),
+                        color: kkPurpleDark,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: _selectedImage != null
-                            ? Image.file(_selectedImage!, fit: BoxFit.cover)
-                            : Image.memory(_imageData!, fit: BoxFit.cover),
+                      child: const Center(
+                        child: Icon(
+                          Icons.image,
+                          size: 24,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: FloatingActionButton(
-                  backgroundColor: kBlackLight,
-                  onPressed: _pickImage,
-                  child: const Icon(
-                    Icons.image,
-                    color: Colors.white,
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void _showActionSheet(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text(
+            "Unsaved Changes",
+            style: TextStyle(
+              fontFamily: "Sf",
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+            "You have unsaved changes. If you exit \n now, your progress will be lost. Do you \n want to continue?",
+            style: TextStyle(
+              fontFamily: "Sf",
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+              color: Colors.black,
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog (Cancel)
+              },
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  fontFamily: "Sf",
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff007AFF),
+                ),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                setState(() {
+                  _selectedImage = null;
+                  _imageData = null; // Remove the image data (Delete action)
+                });
+                Navigator.pop(context); // Close the dialog after deletion
+              },
+              child: const Text(
+                "Delete",
+                style: TextStyle(
+                  fontFamily: "Sf",
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xffFF3B30),
+                ),
+              ),
+              isDestructiveAction: true, // Mark as destructive
+            ),
+          ],
+        );
+      },
     );
   }
 }

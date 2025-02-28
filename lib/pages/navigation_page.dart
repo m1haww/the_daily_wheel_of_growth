@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import provider package
+import 'package:the_daily_wheel_of_growth/models/quiz_manager.dart';
+import 'package:the_daily_wheel_of_growth/models/quiz.list.dart';
+import 'package:the_daily_wheel_of_growth/pages/quiz_page_origin.dart';
+import 'package:the_daily_wheel_of_growth/pages/quiz_result_page.dart';
 import 'package:the_daily_wheel_of_growth/pages/decisions_page.dart';
 import 'package:the_daily_wheel_of_growth/pages/home_page.dart';
-import 'package:the_daily_wheel_of_growth/pages/password_page.dart';
-import 'package:the_daily_wheel_of_growth/pages/quiz_page.dart';
 import 'package:the_daily_wheel_of_growth/pages/setting_page.dart';
 import 'package:the_daily_wheel_of_growth/utils.dart';
+import 'package:the_daily_wheel_of_growth/models/app_provider.dart'; // Import AppProvider
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -16,36 +20,38 @@ class NavigationPage extends StatefulWidget {
 
 class _NavigationPageState extends State<NavigationPage> {
   int _selected = 0;
-  final List<Widget> _pages = [
-    HomePage(),
-    QuizPage(),
-    DecisionsPage(),
-    SettingPage(),
-  ];
+  final Color _selectedColor = kGreenLIght;
+
   final List<String> _tabIcons = [
     "images/Layer_1.png",
     "images/Frame (6).png",
     "images/Frame (7).png",
     "images/Livello_1.png",
   ];
-  final Color _selectedColor = kGreenLIght;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selected = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    // Access category scores from the AppProvider
+    final appProvider = Provider.of<AppProvider>(context);
+    final categoryScores = appProvider.calculateCategoryScores(
+        QuizData()); // Pass the appropriate QuizData instance
+
+    // The pages list dynamically passes categoryScores to the QuizResultPage
+    final List<Widget> _pages = [
+      HomePage(),
+      QuizResultPageOrigin(
+          categoryScores: categoryScores), // Pass categoryScores here
+      DecisionsPage(),
+      SettingPage(),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: _pages[_selected],
       bottomNavigationBar: ClipRRect(
         child: CupertinoTabBar(
           backgroundColor: kkPurpleDark,
-          height: height * 0.1,
+          height: MediaQuery.of(context).size.height * 0.08,
           currentIndex: _selected,
           onTap: (index) {
             setState(() {

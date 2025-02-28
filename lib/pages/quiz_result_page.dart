@@ -1,30 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:the_daily_wheel_of_growth/models/text.dart';
+import 'package:the_daily_wheel_of_growth/pages/navigation_page.dart';
+import 'package:the_daily_wheel_of_growth/utils.dart';
 
-class ResultScreen extends StatelessWidget {
+class QuizResultPage extends StatelessWidget {
   final Map<String, double> categoryScores;
 
-  ResultScreen({required this.categoryScores}) {
-    // Debugging: Print category scores to verify data
-    print("Category Scores Received in ResultScreen:");
-    categoryScores.forEach((category, score) {
-      print("$category: ${score.toStringAsFixed(1)}%");
-    });
-  }
+  QuizResultPage({required this.categoryScores});
 
   final List<Color> sectionColors = [
-    Colors.purple,
-    Colors.blue,
-    Colors.green,
-    Colors.yellow,
-    Colors.red,
-    Colors.lightBlue,
-    Colors.deepOrange,
-    Colors.orange
+    kkPurpleDark,
+    kBlueDark,
+    kGreenLIght,
+    kYellow,
+    kRed,
+    kkBlueLight,
+    kGreenDark,
+    kOrange
   ];
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     List<String> categories = categoryScores.keys.toList();
 
     return Scaffold(
@@ -36,52 +36,105 @@ class ResultScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                buildHeight(context, 0.02),
                 _buildPieChart(),
-                SizedBox(height: 20),
+                buildHeight(context, 0.02),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
+                  children: [
+                    ...List.generate(3, (index) {
+                      // First row (3 items)
+                      return Chip(
+                        label: Text(
+                          categories[index],
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Inter",
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        backgroundColor:
+                            sectionColors[index % sectionColors.length],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      );
+                    }),
+                    ...List.generate(3, (index) {
+                      // Second row (3 items)
+                      return Chip(
+                        label: Text(
+                          categories[index + 3],
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Inter",
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        backgroundColor:
+                            sectionColors[(index + 3) % sectionColors.length],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      );
+                    }),
+                    ...List.generate(2, (index) {
+                      // Last row (2 items)
+                      return Chip(
+                        label: Text(
+                          categories[index + 6],
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Inter",
+                              fontSize: 10,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        backgroundColor:
+                            sectionColors[(index + 6) % sectionColors.length],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+                buildHeight(context, 0.02),
+                Column(
                   children: List.generate(categories.length, (index) {
-                    return Chip(
-                      label: Text(
-                        categories[index],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor:
-                          sectionColors[index % sectionColors.length],
+                    return _buildCategoryContainer(
+                      categories[index],
+                      categoryScores[categories[index]]!,
+                      sectionColors[index % sectionColors.length],
                     );
                   }),
                 ),
-                SizedBox(height: 20),
-                SizedBox(
-                  height: 70,
-                  child: ListView.builder(
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return _buildProgressBar(
-                          categories[index],
-                          categoryScores[categories[index]]!,
-                          sectionColors[index % sectionColors.length]);
-                    },
-                  ),
-                ),
+                buildHeight(context, 0.03),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => NavigationPage(),
+                          ));
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15, horizontal: 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    child: Container(
+                      width: double.infinity,
+                      height: height * 0.06,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: kkPurpleDark),
+                      child: Center(
+                        child: Text("Got it!",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w500)),
                       ),
                     ),
-                    child: Text("Got it!",
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
                   ),
                 ),
               ],
@@ -93,72 +146,52 @@ class ResultScreen extends StatelessWidget {
   }
 
   Widget _buildPieChart() {
-    List<MapEntry<String, double>> sortedEntries = categoryScores.entries
-        .toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: PieChart(
-            PieChartData(
-              sections: sortedEntries.map((entry) {
-                int index = sortedEntries.indexOf(entry);
-                return PieChartSectionData(
-                  color: sectionColors[index % sectionColors.length],
-                  value: entry.value,
-                  title: '${entry.value.toStringAsFixed(1)}%',
-                  radius: 50,
-                  titleStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                );
-              }).toList(),
-              sectionsSpace: 2,
-              centerSpaceRadius: 40,
-            ),
-          ),
+    return SizedBox(
+      height: 200,
+      child: PieChart(
+        PieChartData(
+          sections: categoryScores.entries.map((entry) {
+            int index = categoryScores.keys.toList().indexOf(entry.key);
+            return PieChartSectionData(
+              color: sectionColors[index % sectionColors.length],
+              value: entry.value,
+              title: '',
+              radius: 50,
+            );
+          }).toList(),
+          sectionsSpace: 2,
+          centerSpaceRadius: 40,
         ),
-        SizedBox(height: 20),
-        _buildPercentageText(sortedEntries),
-      ],
+      ),
     );
   }
 
-  Widget _buildPercentageText(List<MapEntry<String, double>> sortedEntries) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: sortedEntries.map((entry) {
-        return Text(
-          '${entry.key}: ${entry.value.toStringAsFixed(1)}%',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildProgressBar(String title, double value, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildCategoryContainer(String title, double value, Color color) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
             style: TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontFamily: "Inter",
+                fontSize: 14,
+                fontWeight: FontWeight.w400),
           ),
-          SizedBox(height: 5),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: value / 100,
-              backgroundColor: Colors.grey.shade800,
-              color: color,
-              minHeight: 15,
-            ),
+          Text(
+            '${value.toStringAsFixed(1)}%',
+            style: TextStyle(
+                color: Colors.white,
+                fontFamily: "Inter",
+                fontSize: 14,
+                fontWeight: FontWeight.w600),
           ),
         ],
       ),

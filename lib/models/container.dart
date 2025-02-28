@@ -7,29 +7,55 @@ import 'package:the_daily_wheel_of_growth/utils.dart';
 
 Widget buildContainer(BuildContext context, VoidCallback onTap, String text) {
   final height = MediaQuery.of(context).size.height;
-  final width = MediaQuery.of(context).size.width;
 
   return GestureDetector(
     onTap: onTap,
-    child: Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        height: height * 0.07,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: kkPurpleDark,
-        ),
+    child: Container(
+      height: height * 0.07,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: kkPurpleDark,
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: 16), // Adaugă un spațiu la stânga
         child: Align(
+          alignment: Alignment.centerLeft, // Aliniere la stânga
           child: Text(
             text,
-            textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 20,
               color: Colors.white,
               fontFamily: 'Inter',
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget buildContainer1(BuildContext context, VoidCallback onTap, String text) {
+  final height = MediaQuery.of(context).size.height;
+
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      height: height * 0.07,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: kkPurpleDark,
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
@@ -59,17 +85,17 @@ Widget buildAppbarAction(BuildContext context) {
       ));
 }
 
-Widget buildAppbarTitle(BuildContext context, String text) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.pop(context);
-    },
-    child: Padding(
-      padding: EdgeInsets.only(right: 80.0),
-      child: buildAppbartext(context, text),
-    ),
-  );
-}
+// Widget buildAppbarTitle(BuildContext context, String text) {
+//   return GestureDetector(
+//     onTap: () {
+//       Navigator.pop(context);
+//     },
+//     child: Padding(
+//       padding: EdgeInsets.only(right: 80.0),
+//       child: buildAppbartext(context, text),
+//     ),
+//   );
+// }
 
 Widget buildAppbarActionCalendar(BuildContext context, DateTime selectedDay) {
   return GestureDetector(
@@ -121,7 +147,7 @@ Widget buildTextField(BuildContext context, String text, Color colortext,
   final width = MediaQuery.of(context).size.width;
   return Container(
     width: width, // Set the width you desire
-    height: 100, // Adjust the height if needed
+
     child: TextField(
       controller: controller,
       keyboardType: TextInputType.multiline,
@@ -144,7 +170,7 @@ Widget buildTextField(BuildContext context, String text, Color colortext,
         fontSize: 20,
         color: colortext,
       ),
-      cursorColor: Colors.black,
+      cursorColor: Colors.white,
     ),
   );
 }
@@ -177,7 +203,7 @@ Widget buildTextFieldDescription(BuildContext context, String text,
         fontSize: 16,
         color: colortext,
       ),
-      cursorColor: Colors.black,
+      cursorColor: Colors.white,
     ),
   );
 }
@@ -189,7 +215,7 @@ Widget buildSave(BuildContext context, VoidCallback onTap, String text) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
-      height: height * 0.06,
+      height: height * 0.08,
       width: width * 0.2,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -203,7 +229,7 @@ Widget buildSave(BuildContext context, VoidCallback onTap, String text) {
             fontSize: 18,
             color: Colors.white,
             fontFamily: 'Inter',
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ),
